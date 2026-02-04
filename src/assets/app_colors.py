@@ -1,0 +1,3 @@
+GHOST_WHITE = "#f8f8ff"
+MAGENTA = "#bd00ff"
+ELECTRIC_SKY_BLUE = "#61c1f5"
