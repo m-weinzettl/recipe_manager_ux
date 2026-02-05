@@ -3,18 +3,19 @@ import src.assets.app_colors as app_colors
 import src.controller.recipe_service as recipe_service
 
 async def gui(page: flet.Page):
+    ICON_REZEPT = "🍴"
     page.color = app_colors.GHOST_WHITE
     page.padding = 0  # Wichtig, damit das Bild bis zum Rand geht
     recipe_list_container = flet.Column(scroll=flet.ScrollMode.AUTO, height=300)
 
-    # 1. Das Hintergrundbild vorbereiten
+
     bg_image = flet.Image(
         src="assets/background_0.png",
         fit=flet.BoxFit.COVER,
         width=page.window.width,
         height=page.window.height,
     )
-    #Bildgröße an Fenstergröße anpassen
+
     async def on_page_resize(e):
         bg_image.width = page.window.width
         bg_image.height = page.window.height
@@ -22,7 +23,6 @@ async def gui(page: flet.Page):
     page.on_resize = on_page_resize
 
     async def show_all_recipes(e):
-
         data = recipe_service.load_json_data()
         recipe_list_container.controls.clear()
 
@@ -31,11 +31,11 @@ async def gui(page: flet.Page):
         else:
             for recipe_id, recipe_info in data.items():
 
-               async def open_details(e, current_info=recipe_info):
+                async def open_details(e, current_info=recipe_info):
                     ingredients = "\n".join(f"- {item}" for item in current_info['ingredients'])
                     instructions = "\n".join(f"- {step}" for step in current_info['instructions'])
 
-                    def close_dialog(e):
+                    async def close_dialog(e):
                         details_dialog.open = False
                         page.update()
 
@@ -46,28 +46,29 @@ async def gui(page: flet.Page):
                             flet.Text(value=ingredients),
                             flet.Text(value="Anleitung:", weight=flet.FontWeight.BOLD),
                             flet.Text(value=instructions)
-                        ], tight=True,
-                            scroll=flet.ScrollMode.AUTO,
-                        ),
-                        actions=[flet.TextButton("Schließen", on_click=close_dialog)],
+                        ], tight=True, scroll=flet.ScrollMode.AUTO),
+                       actions=[flet.TextButton("Schließen", on_click=close_dialog)],
                     )
 
-
-                    # Set the dialog and open it
-                    page.dialog = details_dialog
+                    page.overlay.append(details_dialog)
                     details_dialog.open = True
                     page.update()
 
-                recipe_list_container.controls.append(flet.Container(
-                                                      content=flet.Text(f"🍴 {recipe_info['name']}", color="white"),
-                                                        padding=10,
-                                                        bgcolor=app_colors.MAGENTA,
-                                                        border_radius=5, on_click=open_details,
-                                                        ink=True))
+                recipe_list_container.controls.append(
+                    flet.Container(
+                        content=flet.Text(f"{ICON_REZEPT} {recipe_info['name']}", color="white"),
+                        padding=10,
+                        bgcolor=app_colors.MAGENTA,
+                        border_radius=5,
+                        on_click=open_details,
+                        ink=True
+                    )
+                )
+
         page.update()
 
 
-    # 2. Die UI-Elemente in eine Column packen
+    # ui elements layout
     ui_layout = flet.Column(
         controls=[
             flet.Container( #Header
@@ -99,7 +100,7 @@ async def gui(page: flet.Page):
                     flet.Button("ID's anzeigen",color=app_colors.GHOST_WHITE, bgcolor=app_colors.MAGENTA),
                     flet.Button("Programm beenden",color=app_colors.GHOST_WHITE, bgcolor=app_colors.MAGENTA)
                 ],
-                wrap=True,  # Falls die Buttons zu breit für den Bildschirm sind
+                wrap=True, # smaller buttons on small screens
                 spacing=10
             ),
 
@@ -111,11 +112,12 @@ async def gui(page: flet.Page):
                 margin=10,
                 expand=True
             )
+
+
         ]
     )
 
-    # 3. Den Stack als einziges Haupt-Element hinzufügen
-    # Das zuerst genannte Element (bg_image) liegt ganz unten.
+
     page.add(
         flet.Stack(
             controls=[
