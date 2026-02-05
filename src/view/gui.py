@@ -1,6 +1,7 @@
 import flet as flet
 import src.assets.app_colors as app_colors
 import src.controller.recipe_service as recipe_service
+import src.controller.search_recipe as search_recipe
 
 async def gui(page: flet.Page):
     icon_recipe = "🍴"
@@ -14,7 +15,8 @@ async def gui(page: flet.Page):
         fit=flet.BoxFit.COVER,
 
         width=page.window.width,
-        height=page.window.height,margin=10
+        height=page.window.height,
+        margin=10
     )
 
     async def on_page_resize(e):
