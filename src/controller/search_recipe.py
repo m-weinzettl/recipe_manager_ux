@@ -26,31 +26,9 @@ def filter_by_ingredient(data, search_input):
         return data
 
     found_recipe = {name : info for name , info in data.items()
-                    if search_input in info["ingredients"]}
+                    if any(search_input in ingredients.lower() for ingredients in info["ingredients"])}
     return found_recipe
 
-def recipe_search_by_ingredient(data):
-    search_ingredient = input("Bitte Zutat eingeben: ").lower()
-    found = False
-
-    for id, info in data.items():
-        for ingredient in info["ingredients"]:
-            if search_ingredient in ingredient.lower():
-                found = True
-                print(f"Zutat '{ingredient}' im Rezept '{id}' gefunden!")
-                show = input("Rezept anzeigen? (y/n): ")
-                if show.lower() == "y":
-                    print(f"\nRezept: {id}")
-                    print("Zutaten:")
-                    for ing in info["ingredients"]:
-                        print(f" - {ing}")
-                    print("Anleitung:")
-                    for instr in info["instructions"]:
-                        print(f" - {instr}")
-                break
-
-    if not found:
-        print("Keine Rezepte mit dieser Zutat gefunden.")
 
 
 def delete_recipe(data):
