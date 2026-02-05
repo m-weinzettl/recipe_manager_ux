@@ -1,0 +1,130 @@
+
+{
+    "Suppe": {
+        "ingredients": [
+            "wasser",
+            "gemüse"
+        ],
+        "instructions": [
+            "kochen"
+        ],
+        "id": 1
+    },
+    "Butter": {
+        "name": "Butter",
+        "ingredients": [
+            "Milch"
+        ],
+        "instructions": [
+            "Schlagen"
+        ],
+        "id": "ae422c3c-0f02-4eee-b5e7-63cde04b824a"
+    },
+    "Wurst": {
+        "name": "Wurst",
+        "ingredients": [
+            "Käse",
+            "Brot"
+        ],
+        "instructions": [
+            "Belegen",
+            "Toasten"
+        ],
+        "id": "57f62ccd-c161-42cd-ae2c-ccb370006059"
+    },
+    "null": {
+        "name": null,
+        "ingredients": [],
+        "instructions": [],
+        "id": "a5d28361-fd68-4528-972f-b454f428bc47"
+    },
+    "HLO": {
+        "name": "HLO",
+        "ingredients": [
+            "wert",
+            "wertt"
+        ],
+        "instructions": [
+            "wetttttg"
+        ],
+        "id": "42c208f7-5555-43aa-bd1a-a38aa1e7f6cd"
+    },
+    "test_ing": {
+        "name": "test_ing",
+        "ingredients": [
+            "furf"
+        ],
+        "instructions": [],
+        "id": "b868101b-b964-4b1d-8e18-8d92134869a5"
+    },
+    "Lasagne": {
+        "name": "Lasagne",
+        "ingredients": [
+            "Nudel"
+        ],
+        "instructions": [
+            "Sauce"
+        ],
+        "id": "c0d591ac-1888-4eff-a354-bb141a4e3079"
+    },
+    "test_15": {
+        "name": "test_15",
+        "ingredients": [
+            [
+                "der",
+                "der"
+            ]
+        ],
+        "instructions": [
+            "ser",
+            "ser"
+        ],
+        "id": "c0c7042d-3932-4b8b-84dd-88a902f47ecd"
+    },
+    "test16": {
+        "name": "test16",
+        "ingredients": [
+            [
+                "hh",
+                "hh"
+            ]
+        ],
+        "instructions": [
+            []
+        ],
+        "id": "26fa2ff6-c9d2-4dc6-8fdc-742a4381d3be"
+    },
+    "test17": {
+        "name": "test17",
+        "ingredients": [
+            [
+                "wer"
+            ]
+        ],
+        "instructions": [
+            []
+        ],
+        "id": "fea8ec61-6a69-4c58-ac1d-f59830cd51c9"
+    },
+    "test18": {
+        "name": "test18",
+        "ingredients": [
+            "wert",
+            "wert"
+        ],
+        "instructions": [],
+        "id": "be9e2e8b-baa6-47bb-a7f3-24a9c86c126c"
+    },
+    "test19": {
+        "name": "test19",
+        "ingredients": [
+            "wert",
+            "wert"
+        ],
+        "instructions": [
+            "wert",
+            "wert"
+        ],
+        "id": "5755451f-64fc-4b4e-896d-37c8506a4553"
+    }
+}
