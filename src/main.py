@@ -1,3 +1,4 @@
 from src.view.gui import *
 
-flet.app(target=gui)
+if __name__ == "__main__":
+    flet.run(target=gui)
