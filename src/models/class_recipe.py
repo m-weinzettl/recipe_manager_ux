@@ -38,3 +38,18 @@ class Recipe:
             "instructions": self.instructions,
             "id": str(self.__id)}
 
+
+
+
+recipe_list_container.controls.append(
+                    flet.Container(
+                        content=flet.Text(f"{icon_recipe} {recipe_info['name']}",
+                                          color=app_colors.DARK_COFFE,
+                                          weight=flet.FontWeight.BOLD),
+                        padding=10,
+                        bgcolor=app_colors.LIGHT_LATTE,
+                        border_radius=5,
+                        on_click=open_details,
+                        ink=True
+                    )
+                )

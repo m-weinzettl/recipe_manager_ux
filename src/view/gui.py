@@ -8,6 +8,7 @@ async def gui(page: flet.Page):
     page.color = app_colors.LIGHT_CREAM_COFFE
     page.padding = 0  # Wichtig, damit das Bild bis zum Rand geht
     recipe_list_container = flet.Column(scroll=flet.ScrollMode.AUTO, height=300)
+    filter_menu = flet.Column(scroll=flet.ScrollMode.AUTO, height=100)
 
 
     bg_image = flet.Image(
@@ -51,7 +52,7 @@ async def gui(page: flet.Page):
                             flet.Text(value="Anleitung:", weight=flet.FontWeight.BOLD, color=app_colors.LIGHT_CREAM_COFFE),
                             flet.Text(value=instructions)
                         ], tight=True, scroll=flet.ScrollMode.AUTO),
-                       actions=[flet.Button("Schließen",
+                        actions=[flet.Button("Schließen",
                                             color=app_colors.DARK_COFFE,
                                             bgcolor=app_colors.LIGHT_CREAM_COFFE,
                                             on_click=close_dialog)],
@@ -61,20 +62,74 @@ async def gui(page: flet.Page):
                     details_dialog.open = True
                     page.update()
 
+#              suche class_recipe
                 recipe_list_container.controls.append(
-                    flet.Container(
-                        content=flet.Text(f"{icon_recipe} {recipe_info['name']}",
-                                          color=app_colors.DARK_COFFE,
-                                          weight=flet.FontWeight.BOLD),
-                        padding=10,
-                        bgcolor=app_colors.LIGHT_LATTE,
-                        border_radius=5,
-                        on_click=open_details,
-                        ink=True
-                    )
+                    flet.Button(f"{icon_recipe} {recipe_info['name']}",
+                                on_click=open_details),
                 )
 
         page.update()
+
+    async def filter_recipes(e):
+        recipe_list_container.controls.clear()
+
+        # Hilfsfunktion, um die Ergebnisse anzuzeigen
+        async def update_recipe_list(results):
+            recipe_list_container.controls.clear()
+            # Zurück-Button, um wieder zur Suche zu kommen
+            recipe_list_container.controls.append(
+                flet.TextButton("<- Zurück zum Such-Menü", on_click=filter_recipes)
+            )
+
+            if not results:
+                recipe_list_container.controls.append(flet.Text("Kein Rezept gefunden.", color=app_colors.DARK_COFFE))
+            else:
+                for rid, info in results.items():
+                    recipe_list_container.controls.append(
+                        flet.Button(f"{icon_recipe} {info['name']}",
+                                    on_click=lambda e, i=info: open_details(e, i))
+                    )
+            page.update()
+
+        # Diese Funktion baut das Eingabefeld auf, nachdem man Name oder Zutat gewählt hat
+        async def show_search_input(mode):
+            recipe_list_container.controls.clear()
+
+            search_input = flet.TextField(
+                label=f"Suche nach {mode}...",
+                color=app_colors.DARK_COFFE,
+                focused_border_color=app_colors.DARK_LATTE
+            )
+
+            async def trigger_search(e):
+                data = recipe_service.load_json_data()
+                if mode == "Name":
+                    res = search_recipe.filter_by_name(data, search_input.value)
+                else:
+                    res = search_recipe.filter_by_ingredient(data, search_input.value)
+                await update_recipe_list(res)
+
+            recipe_list_container.controls.extend([
+                flet.Text(f"Filter-Modus: {mode}", weight=flet.FontWeight.BOLD, color=app_colors.DARK_COFFE),
+                search_input,
+                flet.ElevatedButton("Jetzt Suchen", on_click=trigger_search),
+                flet.TextButton("Abbrechen", on_click=filter_recipes)
+            ])
+            page.update()
+
+        # Das initiale Menü (nur Buttons)
+        filter_button_row = flet.Row(
+            controls=[
+                flet.Button("Filtern nach Name", on_click=lambda _: show_search_input("Name")),
+                flet.Button("Filtern nach Zutat", on_click=lambda _: show_search_input("Zutat")),
+                flet.Button("Schließen", on_click=lambda _: recipe_list_container.controls.clear() or page.update())
+            ],
+            wrap=True
+        )
+
+        recipe_list_container.controls.append(filter_button_row)
+        page.update()
+
 
 
     async def close_app(e):
@@ -108,10 +163,13 @@ async def gui(page: flet.Page):
                                 bgcolor=app_colors.LIGHT_LATTE,
                                 on_click=show_all_recipes),
                     flet.Button("Rezept hinzufügen",color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
-                    flet.Button("Rezept suchen",color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
+                    flet.Button("Such Menü",
+                                color=app_colors.LIGHT_CREAM_COFFE,
+                                bgcolor=app_colors.LIGHT_LATTE,
+                                on_click=filter_recipes),
                     flet.Button("Rezepte Namen ändern",color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
                     flet.Button("ID's anzeigen",color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
-                    flet.Button("Programm beenden",color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE)
+
                 ],
                 wrap=True, # smaller buttons on small screens
                 spacing=10
@@ -126,12 +184,12 @@ async def gui(page: flet.Page):
                 expand=True
             ),
 
-            flet.Button("Programm schließen",
-                        color=app_colors.LIGHT_CREAM_COFFE,
-                        bgcolor=app_colors.DARK_COFFE,
-                        on_click=close_app
+        flet.Button("Programm schließen",
+                    color=app_colors.LIGHT_CREAM_COFFE,
+                    bgcolor=app_colors.DARK_COFFE,
+                    on_click=close_app
 
-            )
+                    )
 
 
         ]
