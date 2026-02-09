@@ -1,8 +1,10 @@
+
 import flet as flet
 import src.assets.app_colors as app_colors
 import src.controller.recipe_service as recipe_service
 import src.controller.search_recipe as search_recipe
 import view.new_recipe_dialog as data_validation
+import src.view.show_secret_id as secret_id
 
 
 async def gui(page: flet.Page):
@@ -34,12 +36,13 @@ async def gui(page: flet.Page):
         return None
 
     async def open_details(e, current_info=None):
-        # Falls durch einen Button ohne Lambda aufgerufen, Fallback auf get_info
         if current_info is None:
             current_info = get_info()
 
         if not current_info:
             return
+
+        current_active_dialog["data"] = current_info
 
         ingredients = "\n".join(f"- {item}" for item in current_info['ingredients'])
         instructions = "\n".join(f"- {step}" for step in current_info['instructions'])
@@ -163,6 +166,13 @@ async def gui(page: flet.Page):
         recipe_list_container.controls.append(filter_button_row)
         page.update()
 
+    current_active_dialog = {"data": None}
+
+    async def sec_id_window_key(e: flet.KeyboardEvent):
+        if e.key == "F3" and current_active_dialog.get("data"):
+            await secret_id.show_secret_id(page, current_active_dialog["data"])
+    page.on_keyboard_event = sec_id_window_key
+
     async def close_app(e):
         await page.window.close()
 
@@ -195,8 +205,7 @@ async def gui(page: flet.Page):
                     flet.Button("Such Menü", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE,
                                 on_click=filter_recipes),
                     flet.Button("Rezepte anpassen", color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE),
-                    flet.Button("ID's anzeigen", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
+                                bgcolor=app_colors.LIGHT_LATTE)
                 ],
                 wrap=True, spacing=10
             ),
