@@ -1,4 +1,4 @@
-from app.services.data_validation import *
+
 import uuid
 
 class Recipe:
@@ -23,9 +23,7 @@ class Recipe:
 
     def fill_recipe(self):
 
-
         self.name = data_validation_name()
-
         self.ingredients = data_validation_ingredients()
         self.instructions = data_validation_instructions()
 
@@ -40,16 +38,3 @@ class Recipe:
 
 
 
-
-recipe_list_container.controls.append(
-                    flet.Container(
-                        content=flet.Text(f"{icon_recipe} {recipe_info['name']}",
-                                          color=app_colors.DARK_COFFE,
-                                          weight=flet.FontWeight.BOLD),
-                        padding=10,
-                        bgcolor=app_colors.LIGHT_LATTE,
-                        border_radius=5,
-                        on_click=open_details,
-                        ink=True
-                    )
-                )

@@ -1,4 +1,3 @@
-
 {
     "Butter": {
         "name": "Butter",
@@ -32,5 +31,19 @@
             "wetttttg"
         ],
         "id": "42c208f7-5555-43aa-bd1a-a38aa1e7f6cd"
+    },
+    "Markus Brot": {
+        "name": "Markus Brot",
+        "ingredients": [
+            "Himmel",
+            "Wasser",
+            "Mehl"
+        ],
+        "instructions": [
+            "Mischen",
+            "Aufschlagen",
+            "Essen"
+        ],
+        "id": "4128bc40-64ec-40aa-ab3c-d62fa0514a5b"
     }
 }

@@ -2,6 +2,7 @@ import flet as flet
 import src.assets.app_colors as app_colors
 import src.controller.recipe_service as recipe_service
 import src.controller.search_recipe as search_recipe
+import src.models.data_validation as data_validation
 
 
 async def gui(page: flet.Page):
@@ -180,13 +181,17 @@ async def gui(page: flet.Page):
             ),
             flet.Row(
                 controls=[
-                    flet.Button("Alle Rezepte Anzeigen", color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE, on_click=show_all_recipes),
-                    flet.Button("Rezept hinzufügen", color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE),
+                    flet.Button("Alle Rezepte Anzeigen",
+                                color=app_colors.LIGHT_CREAM_COFFE,
+                                bgcolor=app_colors.LIGHT_LATTE,
+                                on_click=show_all_recipes),
+                    flet.Button("Rezept hinzufügen",
+                                color=app_colors.LIGHT_CREAM_COFFE,
+                                bgcolor=app_colors.LIGHT_LATTE,
+                                on_click=lambda _: page.run_task(data_validation.open_add_recipe_dialog, page)),
                     flet.Button("Such Menü", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE,
                                 on_click=filter_recipes),
-                    flet.Button("Rezepte Namen ändern", color=app_colors.LIGHT_CREAM_COFFE,
+                    flet.Button("Rezepte anpassen", color=app_colors.LIGHT_CREAM_COFFE,
                                 bgcolor=app_colors.LIGHT_LATTE),
                     flet.Button("ID's anzeigen", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE),
                 ],
