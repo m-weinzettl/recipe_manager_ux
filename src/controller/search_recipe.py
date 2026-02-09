@@ -32,7 +32,7 @@ def filter_by_ingredient(data_load, search_input):
 
 
 def delete_recipe(data_load):
-    search_name = input("Bitte Rezeptname eingbene: ").lower()
+    search_name = input("Bitte Rezeptname eingeben: ").lower()
     found = False
     recipe_found = None
     for id, info in data_load.items():
