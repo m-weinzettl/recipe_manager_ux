@@ -62,41 +62,31 @@
         ],
         "id": "335365c9-5a3f-4c58-bf9a-1ea7a39f74fa"
     },
-    "test": {
-        "name": "test",
+    "Markus stinkt": {
+        "name": "Markus stinkt",
         "ingredients": [
-            "rtest"
+            "Markus",
+            "Hauch von nichts",
+            "Sahne"
         ],
         "instructions": [
-            "sdfsdf"
+            "Kneten",
+            "Schlagen",
+            "Backen"
         ],
-        "id": "ad804ff0-f979-43b2-abd1-9d98f801ef0c"
+        "id": "24374a1a-9c5f-4e19-905e-83538d92d409"
     },
-    "test_edit": {
-        "name": "test_edit",
+    "Luftgulasch mit Papierknödl": {
+        "name": "Luftgulasch mit Papierknödl",
         "ingredients": [
-            "wert",
-            "wertt"
+            "Papier",
+            "Luft"
         ],
         "instructions": [
-            "wetttttg"
+            "Kochen",
+            "Dampfen",
+            "Anrichten"
         ],
-        "id": "9011d345-4120-4946-a3c4-9d18ac23fa7f"
-    },
-    "Wurst2": {
-        "name": "Wurst2",
-        "ingredients": [
-            "fettiges Wasser"
-        ],
-        "instructions": [
-            "mixen"
-        ],
-        "id": "55770d6d-f1c1-45dd-afcb-c686d9cbd069"
-    },
-    "": {
-        "name": "",
-        "ingredients": [],
-        "instructions": [],
-        "id": "979efd78-93d2-4975-8fdd-1bd9fbf26f4a"
+        "id": "2642921d-3479-48d6-a72d-788dd37e7306"
     }
 }

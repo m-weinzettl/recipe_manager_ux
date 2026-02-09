@@ -87,7 +87,11 @@ async def gui(page: flet.Page):
                     click_handler = lambda e, info=recipe_info: page.run_task(
                         update_window.update_recipe, page, info, show_all_recipes
                     )
-                    button_text = f"✎ {recipe_info['name']}"  # Ein Icon zur Unterscheidung
+                    button_text = f"✎ {recipe_info['name']}"
+                elif mode == "delete":
+                    click_handler = lambda e, name = recipe_info['name']: page.run_task(confirm_delete, name
+                    )
+                    button_text = f"🗑️ {recipe_info['name']}"
                 else:
                     click_handler = lambda e, info=recipe_info: page.run_task(
                         open_details, e, info
@@ -103,6 +107,29 @@ async def gui(page: flet.Page):
                         width=400
                     )
                 )
+        page.update()
+
+    async def confirm_delete(recipe_name):
+        def do_delete(e):
+            recipe_service.delete_recipe_from_db(recipe_name)
+            delete_dialog.open = False
+            page.update()
+            page.run_task(show_all_recipes, e, mode="delete")
+
+        delete_dialog = flet.AlertDialog(
+            bgcolor=app_colors.DARK_LATTE,
+            title=flet.Text(value=f"Rezept löschen", color=app_colors.LIGHT_CREAM_COFFE),
+            content=flet.Text(value=f"Sind Sie sicher, dass Sie das Rezept '{recipe_name}' löschen möchten?",
+                              color=app_colors.LIGHT_CREAM_COFFE),
+            actions=[flet.Button("Ja, löschen", color=app_colors.DARK_COFFE, on_click=do_delete),
+                        flet.Button("Abbrechen",
+                                    color=app_colors.DARK_COFFE,
+                                    on_click=lambda e: setattr(delete_dialog,
+                                                               "open", False) or page.update())],
+        )
+
+        page.overlay.append(delete_dialog)
+        delete_dialog.open = True
         page.update()
 
     async def filter_recipes(e):
@@ -222,7 +249,14 @@ async def gui(page: flet.Page):
                                 on_click=filter_recipes),
                     flet.Button("Rezepte anpassen", color=app_colors.LIGHT_CREAM_COFFE,
                                 bgcolor=app_colors.LIGHT_LATTE,
-                                on_click=lambda e: page.run_task(show_all_recipes, e, mode="edit"))
+                                on_click=lambda e: page.run_task(show_all_recipes, e, mode="edit")),
+                    flet.Button("Rezept löschen",
+                                color=app_colors.LIGHT_CREAM_COFFE,
+                                bgcolor=app_colors.LIGHT_LATTE,
+                                on_click = lambda e: page.run_task(show_all_recipes, e, mode="delete"))
+
+
+
                 ],
                 wrap=True, spacing=10
             ),
