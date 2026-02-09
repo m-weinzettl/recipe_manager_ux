@@ -72,22 +72,36 @@ async def gui(page: flet.Page):
         details_dialog.open = True
         page.update()
 
-    async def show_all_recipes(e):
+    async def show_all_recipes(e, mode="view"):
         data = recipe_service.load_json_data()
         recipe_list_container.controls.clear()
 
         if not data:
-            recipe_list_container.controls.append(flet.Text("Kein Rezept gefunden."))
+            recipe_list_container.controls.append(
+                flet.Text("Kein Rezept gefunden.", color=app_colors.DARK_COFFE)
+            )
         else:
-            for recipe_id, recipe_info in data.items():
+            for rid, recipe_info in data.items():
+                if mode == "edit":
+                    import src.view.update_recipe as update_window
+                    click_handler = lambda e, info=recipe_info: page.run_task(
+                        update_window.update_recipe, page, info, show_all_recipes
+                    )
+                    button_text = f"✎ {recipe_info['name']}"  # Ein Icon zur Unterscheidung
+                else:
+                    click_handler = lambda e, info=recipe_info: page.run_task(
+                        open_details, e, info
+                    )
+                    button_text = f"{icon_recipe} {recipe_info['name']}"
+
                 recipe_list_container.controls.append(
                     flet.Button(
-                        f"{icon_recipe} {recipe_info['name']}",
-                        # WICHTIG: info=recipe_info bindet den aktuellen Wert an das Lambda
-                        on_click=lambda e, info=recipe_info: page.run_task(open_details, e, info),
+                        button_text,
+                        on_click=click_handler,
                         color=app_colors.LIGHT_CREAM_COFFE,
-                        bgcolor=app_colors.LIGHT_LATTE
-                    ),
+                        bgcolor=app_colors.LIGHT_LATTE,
+                        width=400
+                    )
                 )
         page.update()
 
@@ -122,6 +136,8 @@ async def gui(page: flet.Page):
                 bgcolor=app_colors.LIGHT_LATTE,
                 focused_border_color=app_colors.DARK_LATTE
             )
+
+
 
             async def trigger_search(e):
                 data = recipe_service.load_json_data()
@@ -194,7 +210,7 @@ async def gui(page: flet.Page):
                     flet.Button("Alle Rezepte Anzeigen",
                                 color=app_colors.LIGHT_CREAM_COFFE,
                                 bgcolor=app_colors.LIGHT_LATTE,
-                                on_click=show_all_recipes),
+                                on_click = lambda e: page.run_task(show_all_recipes, e)),
                     flet.Button("Rezept hinzufügen",
                                 color=app_colors.LIGHT_CREAM_COFFE,
                                 bgcolor=app_colors.LIGHT_LATTE,
@@ -205,7 +221,8 @@ async def gui(page: flet.Page):
                     flet.Button("Such Menü", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE,
                                 on_click=filter_recipes),
                     flet.Button("Rezepte anpassen", color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE)
+                                bgcolor=app_colors.LIGHT_LATTE,
+                                on_click=lambda e: page.run_task(show_all_recipes, e, mode="edit"))
                 ],
                 wrap=True, spacing=10
             ),

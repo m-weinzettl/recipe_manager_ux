@@ -18,3 +18,10 @@ def add_recipe_to_db(new_recipe):
 
     with open("recipe_json.json", 'w', encoding='utf-8') as db:
         json.dump(current_data, db, ensure_ascii=False, indent=4)
+
+def delete_recipe_from_db(recipe_name):
+    data = load_json_data()
+    if recipe_name in data:
+        del data[recipe_name]
+        with open("recipe_json.json", 'w', encoding='utf-8') as db:
+            json.dump(data, db, ensure_ascii=False, indent=4)
