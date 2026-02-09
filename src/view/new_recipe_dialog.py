@@ -4,7 +4,7 @@ import src.assets.app_colors as app_colors
 import src.controller.recipe_service as recipe_service
 
 
-async def open_add_recipe_dialog(page: flet.Page):
+async def open_add_recipe_dialog(page: flet.Page, on_recipe_added_callback=None):
 
     name_field = flet.TextField(
         label="Rezeptname",
@@ -37,22 +37,21 @@ async def open_add_recipe_dialog(page: flet.Page):
             page.update()
             return
 
-
+# new class instance
         new_recipe = Recipe(
             name=name_field.value,
             ingredients=[item.strip() for item in ingredients_field.value.split(',') if item.strip()],
             instructions=[item.strip() for item in instructions_field.value.split(',') if item.strip()]
         )
 
-        current_data = recipe_service.load_json_data()
-        current_data[new_recipe.name] = new_recipe.do_dict()
 
-        import json
-        with open("recipe_json.json", 'w', encoding='utf-8') as db:
-            json.dump(current_data, db, ensure_ascii=False, indent=4)
+        recipe_service.add_recipe_to_db(new_recipe)
 
         add_dialog.open = False
         page.update()
+
+        if on_recipe_added_callback:
+            await on_recipe_added_callback(None)
 
     add_dialog = flet.AlertDialog(
         bgcolor=app_colors.DARK_LATTE,

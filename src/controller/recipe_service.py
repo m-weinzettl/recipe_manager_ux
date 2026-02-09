@@ -10,3 +10,11 @@ def load_json_data():
     except FileNotFoundError:
         print("Fehler: JSON-Datei nicht gefunden.")
         return {}
+
+
+def add_recipe_to_db(new_recipe):
+    current_data = load_json_data()
+    current_data[new_recipe.name] = new_recipe.do_dict()
+
+    with open("recipe_json.json", 'w', encoding='utf-8') as db:
+        json.dump(current_data, db, ensure_ascii=False, indent=4)

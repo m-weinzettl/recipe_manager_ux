@@ -21,13 +21,6 @@ class Recipe:
         for instruction in self.instructions:
             print(f"- {instruction}")
 
-    def fill_recipe(self):
-
-        self.name = data_validation_name()
-        self.ingredients = data_validation_ingredients()
-        self.instructions = data_validation_instructions()
-
-
 #code edit for json export
     def do_dict(self):
         return {

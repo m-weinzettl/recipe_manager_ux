@@ -45,5 +45,45 @@
             "Essen"
         ],
         "id": "4128bc40-64ec-40aa-ab3c-d62fa0514a5b"
+    },
+    "Öl Brot": {
+        "name": "Öl Brot",
+        "ingredients": [
+            "Öl",
+            "Mehl",
+            "Eier"
+        ],
+        "instructions": [
+            "Alles mischen",
+            "backen"
+        ],
+        "id": "b66c2088-6bcd-4076-93f4-b86afee12dae"
+    },
+    "Hausbrot": {
+        "name": "Hausbrot",
+        "ingredients": [
+            "Mehl",
+            "Wasser",
+            "Staubzucker"
+        ],
+        "instructions": [
+            "Mixen",
+            "in den Toaster"
+        ],
+        "id": "f746b65d-ced3-491e-96fc-4d6acceb63c8"
+    },
+    "Würstl": {
+        "name": "Würstl",
+        "ingredients": [
+            "Fleisch",
+            "Hack",
+            "Brot"
+        ],
+        "instructions": [
+            "Mixen",
+            "Abtropfen",
+            "leicht erwärmen"
+        ],
+        "id": "335365c9-5a3f-4c58-bf9a-1ea7a39f74fa"
     }
 }
