@@ -1,14 +1,4 @@
 {
-    "Butter": {
-        "name": "Butter",
-        "ingredients": [
-            "Milch"
-        ],
-        "instructions": [
-            "Schlagen"
-        ],
-        "id": "ae422c3c-0f02-4eee-b5e7-63cde04b824a"
-    },
     "Wurst": {
         "name": "Wurst",
         "ingredients": [

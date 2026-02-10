@@ -11,7 +11,6 @@ def load_json_data():
         print("Fehler: JSON-Datei nicht gefunden.")
         return {}
 
-
 def add_recipe_to_db(new_recipe):
     current_data = load_json_data()
     current_data[new_recipe.name] = new_recipe.do_dict()

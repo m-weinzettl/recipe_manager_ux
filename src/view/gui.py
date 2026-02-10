@@ -12,8 +12,8 @@ async def gui(page: flet.Page):
     page.color = app_colors.LIGHT_CREAM_COFFE
     page.padding = 0  # Wichtig, damit das Bild bis zum Rand geht
     recipe_list_container = flet.Column(scroll=flet.ScrollMode.AUTO, height=300)
-    filter_menu = flet.Column(scroll=flet.ScrollMode.AUTO, height=100)
 
+# laden statisches Hintergrundbild
     bg_image = flet.Image(
         src="assets/background_restaurant_0.png",
         fit=flet.BoxFit.COVER,
@@ -21,27 +21,26 @@ async def gui(page: flet.Page):
         height=page.window.height,
         margin=10
     )
-
+#    Hintergrundbild an Fenstergröße anpassen
     async def on_page_resize(e):
         bg_image.width = page.window.width
         bg_image.height = page.window.height
         page.update()
-
     page.on_resize = on_page_resize
-
+#    Funktion um Rezeptdetails anzuzeigen
     def get_info():
         data = recipe_service.load_json_data()
         for id_info, recipe_info in data.items():
             return recipe_info
         return None
-
+#    Funktion um Rezeptdetails in einem Dialog anzuzeigen
     async def open_details(e, current_info=None):
         if current_info is None:
             current_info = get_info()
 
         if not current_info:
             return
-
+        # Speichern der aktuellen Rezeptinformationen für den Zugriff in der Tastenkombination
         current_active_dialog["data"] = current_info
 
         ingredients = "\n".join(f"- {item}" for item in current_info['ingredients'])
@@ -70,6 +69,25 @@ async def gui(page: flet.Page):
 
         page.overlay.append(details_dialog)
         details_dialog.open = True
+        page.update()
+
+    async def confirm_delete(recipe_name):
+        def do_delete(e):
+            recipe_service.delete_recipe_from_db(recipe_name)
+            delete_dialog.open = False
+            page.update()
+            page.run_task(show_all_recipes, e, mode="delete")
+
+        def close_delete_dialog(e):
+            delete_dialog.open = False
+            page.update()
+
+        delete_dialog = ui_layouts.delete_dialog(recipe_name=recipe_name,
+                                                on_confirm=do_delete,
+                                                on_cancel=close_delete_dialog)
+
+        page.overlay.append(delete_dialog)
+        delete_dialog.open = True
         page.update()
 
     async def show_all_recipes(e, mode="view"):
@@ -109,29 +127,6 @@ async def gui(page: flet.Page):
                 )
         page.update()
 
-    async def confirm_delete(recipe_name):
-        def do_delete(e):
-            recipe_service.delete_recipe_from_db(recipe_name)
-            delete_dialog.open = False
-            page.update()
-            page.run_task(show_all_recipes, e, mode="delete")
-
-        delete_dialog = flet.AlertDialog(
-            bgcolor=app_colors.DARK_LATTE,
-            title=flet.Text(value=f"Rezept löschen", color=app_colors.LIGHT_CREAM_COFFE),
-            content=flet.Text(value=f"Sind Sie sicher, dass Sie das Rezept '{recipe_name}' löschen möchten?",
-                              color=app_colors.LIGHT_CREAM_COFFE),
-            actions=[flet.Button("Ja, löschen", color=app_colors.DARK_COFFE, on_click=do_delete),
-                        flet.Button("Abbrechen",
-                                    color=app_colors.DARK_COFFE,
-                                    on_click=lambda e: setattr(delete_dialog,
-                                                               "open", False) or page.update())],
-        )
-
-        page.overlay.append(delete_dialog)
-        delete_dialog.open = True
-        page.update()
-
     async def filter_recipes(e):
         recipe_list_container.controls.clear()
 
@@ -150,6 +145,8 @@ async def gui(page: flet.Page):
                 for rid, info in results.items():
                     recipe_list_container.controls.append(
                         flet.Button(f"{icon_recipe} {info['name']}",
+                                    color=app_colors.LIGHT_CREAM_COFFE,
+                                    bgcolor=app_colors.LIGHT_LATTE,
                                     on_click=lambda e, i=info: page.run_task(open_details, e, i))
                     )
             page.update()
@@ -163,8 +160,6 @@ async def gui(page: flet.Page):
                 bgcolor=app_colors.LIGHT_LATTE,
                 focused_border_color=app_colors.DARK_LATTE
             )
-
-
 
             async def trigger_search(e):
                 data = recipe_service.load_json_data()
@@ -209,6 +204,8 @@ async def gui(page: flet.Page):
         recipe_list_container.controls.append(filter_button_row)
         page.update()
 
+    #   easteregg
+
     current_active_dialog = {"data": None}
 
     async def sec_id_window_key(e: flet.KeyboardEvent):
@@ -219,59 +216,21 @@ async def gui(page: flet.Page):
     async def close_app(e):
         await page.window.close()
 
-    ui_layout = flet.Column(
-        controls=[
-            flet.Container(
-                content=flet.Text("Rezept Manager 9000",
-                                  color=app_colors.DARK_COFFE, size=20, weight=flet.FontWeight.BOLD),
-                padding=20, bgcolor=app_colors.LIGHT_CREAM_COFFE, alignment=flet.Alignment.CENTER, border_radius=10,
-                margin=10
-            ),
-            flet.Container(
-                content=flet.Text("Hauptmenü", size=20, weight=flet.FontWeight.BOLD, color=app_colors.DARK_COFFE),
-                padding=20, width=300, bgcolor=app_colors.LIGHT_CREAM_COFFE, alignment=flet.Alignment.CENTER,
-                border_radius=10, margin=10
-            ),
-            flet.Row(
-                controls=[
-                    flet.Button("Alle Rezepte Anzeigen",
-                                color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE,
-                                on_click = lambda e: page.run_task(show_all_recipes, e)),
-                    flet.Button("Rezept hinzufügen",
-                                color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE,
-                                on_click=lambda _: page.run_task(data_validation.open_add_recipe_dialog,
+
+    actions = {
+        "show_all_button": lambda e: page.run_task(show_all_recipes, e),
+        "add_button": lambda _: page.run_task(data_validation.open_add_recipe_dialog,
                                                                  page,
-                                                                 show_all_recipes)
-                                                    ),
-                    flet.Button("Such Menü", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.LIGHT_LATTE,
-                                on_click=filter_recipes),
-                    flet.Button("Rezepte anpassen", color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE,
-                                on_click=lambda e: page.run_task(show_all_recipes, e, mode="edit")),
-                    flet.Button("Rezept löschen",
-                                color=app_colors.LIGHT_CREAM_COFFE,
-                                bgcolor=app_colors.LIGHT_LATTE,
-                                on_click = lambda e: page.run_task(show_all_recipes, e, mode="delete"))
+                                                                 show_all_recipes),
+        "filter_button": lambda e: page.run_task(filter_recipes, e),
+        "edit_button": lambda e: page.run_task(show_all_recipes, e, mode="edit"),
+        "delete_button": lambda e: page.run_task(show_all_recipes, e, mode="delete"),
+        "close_button": close_app
+        }
 
 
-
-                ],
-                wrap=True, spacing=10
-            ),
-            flet.Container(
-                content=recipe_list_container,
-                padding=20,
-                bgcolor=flet.Colors.with_opacity(0.8, app_colors.LIGHT_CREAM_COFFE),
-                border_radius=10,
-                margin=10,
-                expand=True
-            ),
-            flet.Button("Programm schließen", color=app_colors.LIGHT_CREAM_COFFE, bgcolor=app_colors.DARK_COFFE,
-                        on_click=close_app)
-        ]
-    )
+    import src.view.ui_layouts as ui_layouts
+    ui_layout = await ui_layouts.layouts(page, recipe_list_container, actions)
 
     page.add(
         flet.Stack(
