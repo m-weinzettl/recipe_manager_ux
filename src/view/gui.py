@@ -29,7 +29,7 @@ async def gui(page: flet.Page):
     page.on_resize = on_page_resize
 #    Funktion um Rezeptdetails anzuzeigen
     def get_info():
-        data = recipe_service.load_json_data()
+        data = recipe_service.load_data_from_db()
         for id_info, recipe_info in data.items():
             return recipe_info
         return None
@@ -91,7 +91,7 @@ async def gui(page: flet.Page):
         page.update()
 
     async def show_all_recipes(e, mode="view"):
-        data = recipe_service.load_json_data()
+        data = recipe_service.load_data_from_db()
         recipe_list_container.controls.clear()
 
         if not data:
@@ -162,7 +162,7 @@ async def gui(page: flet.Page):
             )
 
             async def trigger_search(e):
-                data = recipe_service.load_json_data()
+                data = recipe_service.load_data_from_db()
                 if mode == "Name":
                     res = search_recipe.filter_by_name(data, search_input.value)
                 else:

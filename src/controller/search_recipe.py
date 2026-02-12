@@ -1,9 +1,7 @@
 
-import json
-
 from controller import recipe_service
 
-data = recipe_service.load_json_data()
+data = recipe_service.load_data_from_db()
 
 
 def filter_by_name(data_load, search_input):
